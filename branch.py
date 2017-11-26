@@ -5,16 +5,23 @@ import numpy
 
 class Branch:
 
-    def __init__(self, ori=(0, 0), vct=(0, -1), dist=1.0, n=6, p=0.5):
+    def __init__(self, ori=[0, 0], vct=(0, -1), dist=1.0, n=6, p=0.5, dep=0):
 
+        max_depth = 3
         self.ori = ori
         self.vct = vct
         self.dist = dist
         self.n = n
-        self.dens = dist / n
+        self.dens = self.dist / self.n
         self.p = p
+        self.dep = dep + 1
 
         self.angles = self.get_angles()
+        self.nodes = self.place_nodes()
+
+        self.branches = []
+        if self.dep < max_depth:
+            self.branches = [self.place_branches(node) for node in self.nodes]
 
     def place_nodes(self):
         """returns a list of (x, y) tuples of points along this branch. dens says
@@ -43,12 +50,40 @@ class Branch:
 
     def choose(self):
         """uses self.prob to choose true/false."""
-        if self.dist < self.dens:
-            return False
+        # if self.dist < self.dens:
+        #     return False
         if random.random() < self.p:
             return True
         else:
             return False
+
+    def place_branches(self, node):
+        """instantiates a pair(s) of new branches at the given node, and returns
+        a list of pairs of branches."""
+        if len(self.angles) == 1:
+            branches = self.branch_gen(node, self.angles[0])
+            return branches
+        else:
+            j = random.randrange(0, len(self.angles) - 1)
+            branches = self.branch_gen(node, self.angles[j])
+        return branches
+
+    def branch_gen(self, node, angles):
+        """parametrises & instantiates one pair of new branches."""
+        sd = random.randrange(random.getrandbits(32))
+        _len = self.dist - self.dens
+        _den = self.dens
+        if self.choose():
+            _len /= 2
+            _den /= 2
+
+        random.seed(sd)
+        branch_a = Branch(ori=node, vct=angles[0], dist=_len, p=self.p, n=self.n, dep=self.dep)
+        # print('New branch at {} with vec {} and leng {}'.format(branch_a.ori, branch_a.vec, branch_a.leng))
+        random.seed(sd)
+        branch_b = Branch(ori=node, vct=angles[1], dist=_len, p=self.p, n=self.n, dep=self.dep)
+        # print('New branch at {} with vec {} and leng {}'.format(branch_b.ori, branch_b.vec, branch_b.leng))
+        return [branch_a, branch_b]
 
     @staticmethod
     def polar(vct):
@@ -66,3 +101,19 @@ class Branch:
         x = round(math.sin(math.radians(phi)), 3)
         y = -round(math.cos(math.radians(phi)), 3)
         return x, y
+
+    def move(self, move_vct):
+        """move origin by move_vct, update node positions,
+        and pass to children."""
+        self.ori[0] += move_vct[0]
+        self.ori[1] += move_vct[1]
+        # do the same for all my node positions
+        # then pass the node positions downstream
+
+    def rotate(self, angle):
+        """rotate branch by angle. Recalculate node positions,
+        pass to children"""
+        my_angle = self.polar(self.vct)
+        my_angle += angle
+        self.vct = self.cartesian(my_angle)
+        # more loopage

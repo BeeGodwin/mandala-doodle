@@ -56,3 +56,20 @@ def test_create_nodes():
     branch = Branch(dist=30, n=3, vct=(0, 1), p=1)
     nodes = branch.place_nodes()
     assert nodes == [(0, 10), (0, 20)]
+
+
+def test_place_branch():
+    branch = Branch(dist=20, n=4, p=1)
+    assert len(branch.place_branches((0, -10))) == 2
+    assert type(branch.place_branches((0, -10))) == list
+
+
+def test_branch_gen():
+    branch = Branch(dist=20, n=4, p=1)
+    node = (0, -10)
+    angles = [(1, 0), (-1, 0)]
+    branch.branches = branch.branch_gen(node, angles)
+    assert len(branch.branches) == 2
+    assert branch.branches[0].dist == 7.5
+    assert branch.branches[0].vct == (1, 0)
+    assert branch.branches[1].vct == (-1, 0)
