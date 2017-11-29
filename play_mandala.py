@@ -15,7 +15,7 @@ def main():
     n = 9
     branch_list = []
     for i in range(n):
-        branch = Branch(point, angle=360 / n * i, dev=27, dst=100, max_dep=5)
+        branch = Branch(point, angle=360 / n * i, dev=27, dst=100, max_dep=6)
         branch_list.append(branch)
 
     while True:
@@ -23,14 +23,14 @@ def main():
         d_surf.fill((0, 0, 0))
         for branch in branch_list:
             draw_branch(d_surf, branch)
-            branch.inc_angle(0.3, 3)
-            branch.inc_angle(-0.1, 1)
-            branch.inc_angle(0.05, 4)
-            branch.inc_dev(0.02, 2)
+            # branch.inc_tree_angle(-0.2, 3)  # borked either way. this would be straight rotation
+            # branch.inc_angle(0.6, 3)  # push angles breaks
+            branch.inc_dev(0.04, 2)  # doesn't work without push angles
+            branch.inc_tree_dev(0.04)  # ditto
             branch.propagate()
 
         for e in pygame.event.get():
-            if e.type == QUIT:
+            if e.type == QUIT or e.type == KEYDOWN and e.key == 27:
                 pygame.quit()
                 sys.exit()
 
@@ -39,7 +39,6 @@ def main():
 
 def draw_branch(d_surf, branch):
     """recurses down a branch and draws it."""
-
     pygame.draw.aaline(d_surf,
                        (255, 255, 255),
                        (branch.x, branch.y),

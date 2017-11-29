@@ -59,6 +59,14 @@ class Branch(Point):
             for ch in self.chn:
                 ch.inc_angle(degrees, dep)
 
+    def inc_tree_angle(self, degrees, min_dep):
+        """modifies self.angle, and that of all children, by degrees."""
+        if self.dep >= min_dep:
+            self.angle += degrees
+            if len(self.chn) > 0:
+                self.chn[0].inc_tree_angle(-degrees)
+                self.chn[0].inc_tree_angle(degrees)
+
     def inc_dev(self, degrees, dep):
         """Modifies self.dev by degrees at depth dep."""
         if dep == self.dep:
@@ -66,6 +74,11 @@ class Branch(Point):
         else:
             for ch in self.chn:
                 ch.inc_dev(degrees, dep)
+
+    def inc_tree_dev(self, degrees):
+        self.dev += degrees
+        for ch in self.chn:
+            ch.inc_tree_dev(degrees)
 
     def set_position(self, x, y):
         """Changes self.x and self.y to new values."""
@@ -85,7 +98,7 @@ class Branch(Point):
 
     def find_endpoint(self):
         """given self.x, self.y, self.angle and self.dst, compute the x,y
-        coords of the endpoint."""
+        co-ords of the endpoint."""
         vct_x, vct_y = self.cartesian(self.angle)
         end_x = vct_x * self.dst + self.x
         end_y = vct_y * self.dst + self.y
@@ -95,8 +108,6 @@ class Branch(Point):
         """Re-evaluate my own state, and recursively tell child branches
         to update theirs."""
         self.x, self.y = self.get_parent_origin()
-        # self.angle = angle
-        # self.dev = dev
         self.end_x, self.end_y = self.find_endpoint()
         if len(self.chn) > 0:
             self.push_angles()
