@@ -12,7 +12,7 @@ def main():
     d_surf = pygame.display.set_mode(res)
 
     point = Point(wid / 2, hi / 2)
-    n = 9
+    n = 5
     branch_list = []
     for i in range(n):
         branch = Branch(point, angle=360 / n * i, dev=27, dst=100, max_dep=6)
@@ -21,13 +21,15 @@ def main():
     while True:
 
         d_surf.fill((0, 0, 0))
-        for branch in branch_list:
+        for branch in branch_list:  # PH code to test methods: a better gen method reqd!
+            branch.push_angles()
+            branch.inc_tree_angle(-0.2)  # all works now, but order is important!
+            branch.inc_angle(10, 3)  # push_angle first
+            branch.inc_tree_dev(0.04)  # then angle ops, tree-wide first
+            branch.inc_dev(-0.4, 2)  # then dev ops, tree-wide first.
+            branch.propagate()  # then propagate.
             draw_branch(d_surf, branch)
-            # branch.inc_tree_angle(-0.2, 3)  # borked either way. this would be straight rotation
-            # branch.inc_angle(0.6, 3)  # push angles breaks
-            branch.inc_dev(0.04, 2)  # doesn't work without push angles
-            branch.inc_tree_dev(0.04)  # ditto
-            branch.propagate()
+
 
         for e in pygame.event.get():
             if e.type == QUIT or e.type == KEYDOWN and e.key == 27:

@@ -59,13 +59,13 @@ class Branch(Point):
             for ch in self.chn:
                 ch.inc_angle(degrees, dep)
 
-    def inc_tree_angle(self, degrees, min_dep):
+    def inc_tree_angle(self, degrees):
         """modifies self.angle, and that of all children, by degrees."""
-        if self.dep >= min_dep:
-            self.angle += degrees
-            if len(self.chn) > 0:
-                self.chn[0].inc_tree_angle(-degrees)
-                self.chn[0].inc_tree_angle(degrees)
+        # if self.dep >= min_dep:
+        self.angle += degrees
+        if len(self.chn) > 0:
+            self.chn[0].inc_tree_angle(-degrees)
+            self.chn[1].inc_tree_angle(degrees)
 
     def inc_dev(self, degrees, dep):
         """Modifies self.dev by degrees at depth dep."""
@@ -110,7 +110,7 @@ class Branch(Point):
         self.x, self.y = self.get_parent_origin()
         self.end_x, self.end_y = self.find_endpoint()
         if len(self.chn) > 0:
-            self.push_angles()
+            # self.push_angles()
             self.chn[0].propagate()
             self.chn[1].propagate()
 
@@ -123,6 +123,8 @@ class Branch(Point):
     def push_angles(self):
         if len(self.chn) > 0:
             self.chn[0].angle = self.angle - self.dev
+            self.chn[0].push_angles()
             self.chn[1].angle = self.angle + self.dev
+            self.chn[1].push_angles()
 
 
