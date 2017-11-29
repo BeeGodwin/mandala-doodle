@@ -19,7 +19,6 @@ class Branch(Point):
         self.dep = dep
         self.max_dep = max_dep
         self.dev = dev
-        # self.pos = pos
 
         if self.dep == 1:
             self.x, self.y = parent.x, parent.y
@@ -61,7 +60,6 @@ class Branch(Point):
 
     def inc_tree_angle(self, degrees):
         """modifies self.angle, and that of all children, by degrees."""
-        # if self.dep >= min_dep:
         self.angle += degrees
         if len(self.chn) > 0:
             self.chn[0].inc_tree_angle(-degrees)
@@ -105,12 +103,11 @@ class Branch(Point):
         return end_x, end_y
 
     def propagate(self):
-        """Re-evaluate my own state, and recursively tell child branches
-        to update theirs."""
+        """Re-evaluate my own startpoint and endpoint, and recursively tell
+        child branches to update theirs."""
         self.x, self.y = self.get_parent_origin()
         self.end_x, self.end_y = self.find_endpoint()
         if len(self.chn) > 0:
-            # self.push_angles()
             self.chn[0].propagate()
             self.chn[1].propagate()
 
@@ -126,5 +123,3 @@ class Branch(Point):
             self.chn[0].push_angles()
             self.chn[1].angle = self.angle + self.dev
             self.chn[1].push_angles()
-
-
