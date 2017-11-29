@@ -99,6 +99,7 @@ class Branch(Point):
         # self.dev = dev
         self.end_x, self.end_y = self.find_endpoint()
         if len(self.chn) > 0:
+            self.push_angles()
             self.chn[0].propagate()
             self.chn[1].propagate()
 
@@ -107,5 +108,10 @@ class Branch(Point):
         if self.dep == 1:
             return self.parent.x, self.parent.y
         return self.parent.end_x, self.parent.end_y
+
+    def push_angles(self):
+        if len(self.chn) > 0:
+            self.chn[0].angle = self.angle - self.dev
+            self.chn[1].angle = self.angle + self.dev
 
 

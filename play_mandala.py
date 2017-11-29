@@ -23,10 +23,10 @@ def main():
         d_surf.fill((0, 0, 0))
         for branch in branch_list:
             draw_branch(d_surf, branch)
-            # branch.inc_angle(0.3, 3)
-            # branch.inc_angle(-0.1, 1)
-            # branch.inc_angle(0.05, 4)
-            branch.inc_dev(1, 2)
+            branch.inc_angle(0.3, 3)
+            branch.inc_angle(-0.1, 1)
+            branch.inc_angle(0.05, 4)
+            branch.inc_dev(0.02, 2)
             branch.propagate()
 
         for e in pygame.event.get():
