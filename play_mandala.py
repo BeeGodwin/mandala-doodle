@@ -1,6 +1,7 @@
 import pygame
 import sys
 from pygame.locals import *
+import random
 
 from branch import Branch, Point
 from colour import Colours
@@ -18,15 +19,19 @@ def main():
     point = Point(wid / 2, hi / 2)
     n = 7
     max_dep = 5
-    branch_list = []
-    for i in range(n):
-        branch = Branch(point, angle=360 / n * i, dev=90 / n, dst=150, max_dep=max_dep)
-        branch_list.append(branch)
 
     cols = Colours((0, 0, 0), (255, 0, 0), (255, 255, 0), (0, 255, 0))
 
+    branch_list = []
+    for i in range(n):
+        branch = Branch(point, angle=360 / n * i, dev=90 / n, dst=200, max_dep=max_dep)
+        branch_list.append(branch)
+
+    set_colours(branch_list, cols)
+
     while True:
 
+        cols.inc_colours(1)
         d_surf.fill((0, 0, 0))
         for branch in branch_list:  # PH code to test methods: a better gen method reqd!
             branch.push_angles()
@@ -36,8 +41,8 @@ def main():
             branch.inc_tree_dev(0.02)  # then angle ops, tree-wide first
             branch.inc_dev(-0.2, 2)  # then dev ops, tree-wide first.
             branch.propagate()  # then propagate.
-            draw_circles(d_surf, branch, max_dep)
-            draw_branch(d_surf, branch)
+            # draw_circles(d_surf, branch, max_dep)
+            draw_branch(d_surf, branch, cols)
 
 
         for e in pygame.event.get():
@@ -49,15 +54,28 @@ def main():
         clock.tick(fps)
 
 
-def draw_branch(d_surf, branch):
+def set_colours(branch_list, cols):
+
+    def walk_branch(branch):
+        cols.assign_colour(branch, init_col_id[branch.dep - 1])
+        for ch in branch.chn:
+            walk_branch(ch)
+
+    dep = branch_list[0].max_dep
+    init_col_id = [random.randrange(0, cols.range) for _ in range(dep)]
+    for b in branch_list:
+        walk_branch(b)
+
+
+def draw_branch(d_surf, branch, cols):
     """recurses down a branch and draws it."""
     pygame.draw.aaline(d_surf,
-                       (255, 255, 255),
+                       cols.palette[cols.get_colour(branch)],
                        (branch.x, branch.y),
                        (branch.end_x, branch.end_y),
                        1)
     for ch in branch.chn:
-        draw_branch(d_surf, ch)
+        draw_branch(d_surf, ch, cols)
 
 
 def draw_circles(d_surf, branch, size):

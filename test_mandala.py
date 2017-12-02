@@ -20,3 +20,18 @@ def test_populate_palette():
     assert pal[256] == (127, 127, 127)
     assert pal[768] == (127, 127, 127)
     assert pal[1023] == (0, 0, 0)
+
+
+def test_assign_colour():
+    c = Colours((0, 0, 0), (255, 255, 255))
+    p = Point(0, 0)
+    b = Branch(p)
+    c.assign_colour(b, 0)
+    assert c.objects[b] == 0
+
+def test_get_colour():
+    c = Colours((0, 0, 0), (255, 255, 255))
+    p = Point(0, 0)
+    b = Branch(p)
+    c.assign_colour(b, 0)
+    assert c.palette[c.get_colour(b)] == (0, 0, 0)

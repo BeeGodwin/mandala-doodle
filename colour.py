@@ -39,14 +39,14 @@ class Colours:
         """Assigns a colour to an object by making a key/val pair in self.objects"""
         self.objects[obj] = i
 
-    def return_colour(self, obj):
+    def get_colour(self, obj):
         """Returns the colour id associated with obj. If obj doesn't have a colour, it
         gets one."""
         if obj in self.objects.keys():
             return self.objects[obj]
         else:
             self.assign_colour(obj, random.randrange(0, self.range))
-            return self.objects[obj]
+            return self.palette[self.objects[obj]]
 
     def inc_colours(self, i):
         """Increments all colour id integers by i."""
