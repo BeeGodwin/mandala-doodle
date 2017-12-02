@@ -1,9 +1,14 @@
+import random
+
+
 class Colours:
 
     def __init__(self, *args):
 
         self.colours = []
         self.range = 1024
+
+        self.objects = {}
 
         for col in args:
             self.colours.append(col)
@@ -24,3 +29,27 @@ class Colours:
                 rgb = [int(col_a[k] + (col_change[k] / delta_range) * i) for k in range(3)]
                 palette.append((rgb[0], rgb[1], rgb[2]))
         return palette
+
+    def set_range(self, _range):
+        """Pass in a new value for range and rebuild the palette."""
+        self.range = _range
+        self.populate_palette()
+
+    def assign_colour(self, obj, i):
+        """Assigns a colour to an object by making a key/val pair in self.objects"""
+        self.objects[obj] = i
+
+    def return_colour(self, obj):
+        """Returns the colour id associated with obj. If obj doesn't have a colour, it
+        gets one."""
+        if obj in self.objects.keys():
+            return self.objects[obj]
+        else:
+            self.assign_colour(obj, random.randrange(0, self.range))
+            return self.objects[obj]
+
+    def inc_colours(self, i):
+        """Increments all colour id integers by i."""
+        for obj in self.objects.keys():
+            self.objects[obj] += i
+            self.objects[obj] %= self.range
