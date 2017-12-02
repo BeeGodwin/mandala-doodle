@@ -35,3 +35,6 @@ def test_get_colour():
     b = Branch(p)
     c.assign_colour(b, 0)
     assert c.palette[c.get_colour(b)] == (0, 0, 0)
+    c.assign_colour(b, 1023)
+    assert c.palette[c.get_colour(b)] == (0, 0, 0)
+

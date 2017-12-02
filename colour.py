@@ -28,6 +28,8 @@ class Colours:
             for i in range(delta_range):
                 rgb = [int(col_a[k] + (col_change[k] / delta_range) * i) for k in range(3)]
                 palette.append((rgb[0], rgb[1], rgb[2]))
+        while len(palette) < self.range:
+            palette.append(palette[-1])
         return palette
 
     def set_range(self, _range):
