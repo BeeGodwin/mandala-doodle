@@ -4,7 +4,7 @@ import random
 class Colours:
 
     def __init__(self, *args):
-
+        """Takes a list of colour 3-tuples."""
         self.colours = []
         self.range = 1024
 
@@ -18,7 +18,8 @@ class Colours:
     def populate_palette(self):
         """returns a list of (r, g, b) values forming a cycle between all
         the colours in self.colours. Interpolates to create a list of length
-        self.range."""
+        self.range. self.colours must not be an empty list, and needs at least
+        two values for this code to make any difference."""
         palette = []
         delta_range = self.range // len(self.colours)
         for j in range(len(self.colours)):
@@ -37,13 +38,14 @@ class Colours:
         self.range = _range
         self.populate_palette()
 
-    def assign_colour(self, obj, i):
-        """Assigns a colour to an object by making a key/val pair in self.objects"""
-        self.objects[obj] = i
+    def assign_colour(self, obj, col_id):
+        """Assigns a colour to an object by making a key/val pair in self.objects,
+        where the key is the object and the value is an integer in the range 0-self.range."""
+        self.objects[obj] = col_id
 
     def get_colour(self, obj):
         """Returns the colour id associated with obj. If obj doesn't have a colour, it
-        gets one."""
+        gets a random colour id."""
         if obj in self.objects.keys():
             return self.objects[obj]
         else:

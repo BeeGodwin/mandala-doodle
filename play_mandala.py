@@ -17,7 +17,7 @@ def main():
     d_surf = pygame.display.set_mode(res)
 
     point = Point(wid / 2, hi / 2)
-    n = 17
+    n = 7
     max_dep = 5
 
     cols = Colours((0, 0, 0),
