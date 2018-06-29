@@ -12,6 +12,7 @@ class Point:
     # Would be better perhaps to have a class that does the tree, and another that does the
     # node info? Clearer....
 
+
 class Branch(Point):
     """one line in the mandala."""
     def __init__(self, parent, dep=1, angle=0, dev=10, dst=100, max_dep=5):
